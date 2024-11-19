@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App(){
   const [input, setInput] = useState('');
@@ -7,6 +7,22 @@ function App(){
     'Estudar React JS',
 
   ]);
+
+  useEffect(() => {
+    const tarefasStorage = localStorage.getItem('@tarefa');
+    
+    if(tarefasStorage){
+      setTarefas(JSON.parse(tarefasStorage));
+    }
+  },[]);
+
+
+  //Utilizando useEffect em tarefas
+  useEffect(() => {
+
+    //salvando no localstorage a tarefa que foi cadastrada
+    localStorage.setItem('@tarefa', JSON.stringify(tarefas));
+  }, [tarefas]);
 
 
   //função para registar o formulário
