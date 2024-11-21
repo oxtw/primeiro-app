@@ -1,61 +1,44 @@
-import { useState, useEffect } from 'react';
+import React , {useEffect, useState} from "react";
+import './style.css';
+
+/*
+api para consumir e realizar a requisição http
+https://sujeitoprogramador.com/rn-api/?api=posts
+*/
 
 function App(){
-  const [input, setInput] = useState('');
-  const [tarefas, setTarefas] = useState([
-    'Pagar a conta de Luz',
-    'Estudar React JS',
+  const [nutri, setNutri] = useState([]);
 
-  ]);
-
-  useEffect(() => {
-    const tarefasStorage = localStorage.getItem('@tarefa');
-    
-    if(tarefasStorage){
-      setTarefas(JSON.parse(tarefasStorage));
+  useEffect(()=> {
+    function loadApi(){
+      let url = 'https://sujeitoprogramador.com/rn-api/?api=posts';
+      fetch(url)
+      .then((r)=> r.json())
+      .then((json)=>{
+        console.log(json);
+        setNutri(json);
+      })
     }
-  },[]);
-
-
-  //Utilizando useEffect em tarefas
-  useEffect(() => {
-
-    //salvando no localstorage a tarefa que foi cadastrada
-    localStorage.setItem('@tarefa', JSON.stringify(tarefas));
-  }, [tarefas]);
-
-
-  //função para registar o formulário
-  function handleRegister(e){
-    //função para não recarregar a pagina após confirmar o envio do formulário
-    e.preventDefault();
-
-    setTarefas([...tarefas, input]);
-    setInput('');
-  }
+    loadApi();
+  }, []);
 
 
   return(
-    <div>
-      <h1>Cadastrando Usuário</h1>
-      <form onSubmit={handleRegister}>
-        <label>Nome da tarefa:</label><br/>
-        <input 
-        placeholder='Digite uma tarefa'
-        value={input}
-        onChange={ (e) => setInput(e.target.value) }
-        ></input><br/>
-
-        <button type='submit'>Registrar</button>
-      </form>
-
-      <br/><br/>
-
-      <ul>
-          {tarefas.map(tarefa => (
-            <li key={tarefa}>{tarefa}</li>
-          ))}
-      </ul>
+    <div className="container">
+      <header>
+        <strong>React nutri</strong>
+      </header>
+      {/* retornando a api na pagina */}
+      {nutri.map((item)=>{
+        return(
+          <article key={item.id} className="posts"> 
+              <strong className="titulo">{item.titulo}</strong>
+              <img src={item.capa} alt={item.titulo} className=""></img>
+              <p className="subtitulo">{item.subtitulo}</p>
+              <a className="botao">Acessar</a>
+          </article>
+        )
+      })}
     </div>
   );
 }
